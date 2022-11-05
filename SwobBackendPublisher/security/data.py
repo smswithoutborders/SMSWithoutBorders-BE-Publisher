@@ -2,8 +2,8 @@ import logging
 
 from SwobBackendPublisher.schemas.credentials import Credentials
 creds = Credentials.get(Credentials.id == 1)
-e_key = creds.key
-salt = creds.salt
+e_key = creds.shared_key
+salt = creds.hashing_salt
 
 import string
 import hashlib
