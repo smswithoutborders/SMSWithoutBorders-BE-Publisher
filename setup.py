@@ -15,13 +15,13 @@ setup(
     author_email='developers@smswithoutborders.com',
     license='The GNU General Public License v3.0',
     install_requires=[
-        'wheel'
-        'mysql-connector-python',
-        'mysqlclient',
-        'peewee',
-        'protobuf',
-        'pycryptodome',
-        'Werkzeug'
+        'wheel==0.38.2'
+        'mysql-connector-python==8.0.29',
+        'mysqlclient==2.1.1',
+        'peewee==3.15.1',
+        'protobuf==4.21.9',
+        'pycryptodome==3.14.1',
+        'Werkzeug==2.1.2'
     ],
     test_suite='tests',
 )
