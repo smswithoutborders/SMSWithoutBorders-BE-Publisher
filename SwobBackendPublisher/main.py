@@ -1,5 +1,7 @@
 import logging
 
+from SwobBackendPublisher.exceptions import PlatformDoesNotExist
+
 from werkzeug.exceptions import BadRequest
 
 logger = logging.getLogger(__name__)
@@ -59,6 +61,27 @@ class Lib:
             return {
                 "user_id": user["userId"]
             }
+
+        except Exception as error:
+            logger.exception(error)
+            raise error
+
+    def whichplatform(self, platform_letter:str) -> dict:
+        """
+        """
+        from SwobBackendPublisher.models.platforms import PlatformModel
+
+        try:
+            Platform = PlatformModel()
+
+            platform = Platform.find(platform_letter=platform_letter)
+
+            return {
+                "platform_name": platform.name
+            }
+
+        except PlatformDoesNotExist as error:
+            raise error from None
 
         except Exception as error:
             logger.exception(error)
