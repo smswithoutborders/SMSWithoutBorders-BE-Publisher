@@ -10,16 +10,16 @@ Please make sure you have Python 3.7 or newer (python --version).
 
 ### Create a Virtual Environments
 
-```
-python3 -m venv venv
-. venv/bin/activate
+```bash
+$ python3 -m venv venv
+$ . venv/bin/activate
 ```
 
 ### PyPI
 
 ```bash
-pip install --upgrade pip wheel
-pip install git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git#egg=SwobBackendPublisher
+$ pip install --upgrade pip wheel
+$ pip install git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git#egg=SwobBackendPublisher
 ```
 
 ## Usage
