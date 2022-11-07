@@ -22,14 +22,14 @@ class Lib:
     def decrypt(self, phone_number: str, platform_name: str) -> dict:
         """
         """
-        from SwobBackendPublisher.models.grants import Grant_Model
-        from SwobBackendPublisher.models.platforms import Platform_Model
-        from SwobBackendPublisher.models.users import User_Model
+        from SwobBackendPublisher.models.grants import GrantModel
+        from SwobBackendPublisher.models.platforms import PlatformModel
+        from SwobBackendPublisher.models.users import UserModel
 
         try:
-            User = User_Model()
-            Grant = Grant_Model()
-            Platform = Platform_Model()
+            User = UserModel()
+            Grant = GrantModel()
+            Platform = PlatformModel()
         
             user = User.find(phone_number=phone_number)
             platform = Platform.find(platform_name=platform_name)
@@ -49,10 +49,10 @@ class Lib:
     def whoami(self, phone_number:str) -> dict:
         """
         """
-        from SwobBackendPublisher.models.users import User_Model
+        from SwobBackendPublisher.models.users import UserModel
 
         try:
-            User = User_Model()
+            User = UserModel()
 
             user = User.find(phone_number=phone_number)
 

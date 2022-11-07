@@ -16,7 +16,7 @@ UserPlatformObject= ()
 
 logger = logging.getLogger(__name__)
 
-class User_Model:
+class UserModel:
     def __init__(self) -> None:
         """
         """

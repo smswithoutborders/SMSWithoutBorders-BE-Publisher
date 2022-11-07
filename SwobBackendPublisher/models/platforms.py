@@ -11,7 +11,7 @@ PlatformObject = ()
 
 logger = logging.getLogger(__name__)
 
-class Platform_Model:
+class PlatformModel:
     def __init__(self) -> None:
         self.Platforms = Platforms
 

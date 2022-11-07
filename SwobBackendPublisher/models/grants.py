@@ -13,7 +13,7 @@ GrantObject = ()
 
 logger = logging.getLogger(__name__)
 
-class Grant_Model:
+class GrantModel:
     def __init__(self) -> None:
         self.Wallets = Wallets
         self.Data = Data
