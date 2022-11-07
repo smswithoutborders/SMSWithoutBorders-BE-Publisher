@@ -1,6 +1,6 @@
 import logging
 
-from SwobBackendPublisher.exceptions import PlatformDoesNotExist
+from SwobBackendPublisher.exceptions import PlatformDoesNotExist, UserDoesNotExist, DuplicateUsersExist
 
 from werkzeug.exceptions import BadRequest
 
@@ -43,12 +43,19 @@ class Lib:
                 d_grant = []
 
             return d_grant
+        
+        except (
+            UserDoesNotExist, 
+            DuplicateUsersExist,
+            PlatformDoesNotExist
+            ) as error:
+            raise error from None
                     
         except Exception as error:
             logger.exception(error)
             raise error
 
-    def whoami(self, phone_number:str) -> dict:
+    def whoami(self, phone_number: str) -> dict:
         """
         """
         from SwobBackendPublisher.models.users import UserModel
@@ -62,11 +69,14 @@ class Lib:
                 "user_id": user["userId"]
             }
 
+        except (UserDoesNotExist, DuplicateUsersExist) as error:
+            raise error from None
+
         except Exception as error:
             logger.exception(error)
             raise error
 
-    def whichplatform(self, platform_letter:str) -> dict:
+    def whichplatform(self, platform_letter: str) -> dict:
         """
         """
         from SwobBackendPublisher.models.platforms import PlatformModel
@@ -82,6 +92,22 @@ class Lib:
 
         except PlatformDoesNotExist as error:
             raise error from None
+
+        except Exception as error:
+            logger.exception(error)
+            raise error
+
+    def myplatforms(self, user_id: str) -> dict:
+        """
+        """
+        from SwobBackendPublisher.models.users import UserModel
+
+        try:
+            User = UserModel()
+
+            result = User.find_platform(user_id=user_id)
+
+            return result
 
         except Exception as error:
             logger.exception(error)

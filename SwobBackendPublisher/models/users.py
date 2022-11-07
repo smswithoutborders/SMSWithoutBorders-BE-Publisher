@@ -1,18 +1,16 @@
 import logging
+import json
 
-from peewee import DatabaseError
+from peewee import JOIN, DatabaseError
 
 from SwobBackendPublisher.schemas.users import Users
 from SwobBackendPublisher.schemas.usersinfo import UsersInfos
+from SwobBackendPublisher.schemas.wallets import Wallets
+from SwobBackendPublisher.schemas.platforms import Platforms
 
 from SwobBackendPublisher.security.data import Data
 
-from werkzeug.exceptions import Unauthorized
-from werkzeug.exceptions import Conflict
-from werkzeug.exceptions import InternalServerError
-
-UserObject = ()
-UserPlatformObject= ()
+from SwobBackendPublisher.exceptions import UserDoesNotExist, DuplicateUsersExist
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +20,11 @@ class UserModel:
         """
         self.Users = Users
         self.UsersInfos = UsersInfos
+        self.Wallets = Wallets
+        self.Platforms = Platforms
         self.Data = Data
 
-    def find(self, phone_number: str = None, user_id: str = None) -> UserObject:
+    def find(self, phone_number: str = None, user_id: str = None) -> object:
         """
         """
         try:
@@ -46,15 +46,18 @@ class UserModel:
 
                 # check for no user
                 if len(userinfos) < 1:
-                    logger.error("Invalid Phone number")
-                    raise Unauthorized()
+                    reason = "Invalid Phone Number: %s" % phone_number_hash
+                    logger.error(reason)
+                    raise UserDoesNotExist(reason)
 
                 # check for duplicate user
                 if len(userinfos) > 1:
-                    logger.error("Duplicate verified users found: %s" % phone_number_hash)
-                    raise Conflict()
+                    reason = "Duplicate users found with Phone Number: %s" % phone_number_hash
+                    logger.error(reason)
+                    raise DuplicateUsersExist(reason)
 
-                logger.info("- Successfully found verified user: %s" % phone_number_hash)
+                logger.info("- Successfully found user with Phone Number: %s" % phone_number_hash)
+                
                 return userinfos[0]
 
             elif user_id:
@@ -71,15 +74,17 @@ class UserModel:
 
                 # check for no user
                 if len(userinfos) < 1:
-                    logger.error("Invalid User Id")
-                    raise Unauthorized()
+                    reason = "Invalid UserId: %s" % user_id
+                    logger.error(reason)
+                    raise UserDoesNotExist(reason)
 
                 # check for duplicate user
                 if len(userinfos) > 1:
-                    logger.error("Duplicate verified users found: %s" % user_id)
-                    raise Conflict()
+                    reason = "Duplicate users found with UserId: %s" % user_id
+                    logger.error(reason)
+                    raise DuplicateUsersExist(reason)
 
-                logger.info("- Successfully found verified user: %s" % user_id)
+                logger.info("- Successfully found user with ID: %s" % user_id)
 
                 user = (
                     self.Users.select(
@@ -94,13 +99,15 @@ class UserModel:
 
                  # check for no user
                 if len(user) < 1:
-                    logger.error("Invalid User Id")
-                    raise Unauthorized()
+                    reason = "Invalid UserId: %s" % userinfos[0]["userId"]
+                    logger.error(reason)
+                    raise UserDoesNotExist(reason)
 
                 # check for duplicate user
                 if len(user) > 1:
-                    logger.error("Duplicate verified users found: %s" % user_id)
-                    raise Conflict()
+                    reason = "Duplicate users found with UserId: %s" % userinfos[0]["userId"]
+                    logger.error(reason)
+                    raise DuplicateUsersExist(reason)
 
                 return {
                     "userinfo": userinfos[0],
@@ -108,6 +115,80 @@ class UserModel:
                     "last_login": user[0]["last_login"]
                 }
 
-        except DatabaseError as err:
-            logger.error("Failed finding user check logs")
-            raise InternalServerError(err)
+        except DatabaseError as error:
+            raise error
+
+    def find_platform(self, user_id: str) -> object:
+        """
+        """
+        try:
+            user_platforms = {
+                "unsaved_platforms": [],
+                "saved_platforms": []
+            }
+
+            logger.debug("Fetching unsaved platforms for %s ..." % user_id)
+            
+            t2 = (
+                self.Wallets.alias("t2").select()
+                .where(
+                    self.Wallets.alias("t2").userId == user_id
+                )
+            )
+
+            unsaved_platforms = (
+                self.Platforms.select()
+                .join(t2, JOIN.LEFT_OUTER, on=(t2.c.platformId == self.Platforms.id))
+                .where(
+                    t2.c.platformId == None
+                )
+                .dicts()
+            )
+
+            for row in unsaved_platforms:
+                result = {
+                    "name": row["name"].lower(),
+                    "description": json.loads(row["description"]),
+                    "logo": row["logo"],
+                    "initialization_url": f"/platforms/{row['name']}/protocols/{json.loads(row['protocols'])[0]}",
+                    "type": row["type"],
+                    "letter": row["letter"]
+                }
+
+                user_platforms["unsaved_platforms"].append(result)
+
+            logger.debug("Fetching saved platforms for %s ..." % user_id)
+
+            saved_wallet_platform = (
+                self.Wallets.select()
+                .where(
+                    self.Wallets.userId == user_id
+                )
+                .dicts()
+            )
+
+            for row in saved_wallet_platform:
+                saved_platforms = (
+                    self.Platforms.select()
+                    .where(
+                        self.Platforms.id == row["platformId"]
+                    )
+                    .dicts()
+                )
+
+                result = {
+                    "name": saved_platforms[0]["name"].lower(),
+                    "description": json.loads(saved_platforms[0]["description"]),
+                    "logo": saved_platforms[0]["logo"],
+                    "initialization_url": f"/platforms/{saved_platforms[0]['name']}/protocols/{json.loads(saved_platforms[0]['protocols'])[0]}",
+                    "type": saved_platforms[0]["type"],
+                    "letter": saved_platforms[0]["letter"]
+                }
+
+                user_platforms["saved_platforms"].append(result)
+
+            logger.info("- Successfully Fetched users platforms")
+            return user_platforms
+
+        except DatabaseError as error:
+            raise error

@@ -28,26 +28,34 @@ $ pip install git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publ
 
 ```python
 from SwobBackendPublisher import MySQL, Lib
+from SwobBackendPublisher.exceptions import PlatformDoesNotExist, UserDoesNotExist, DuplicateUsersExist
 
 MYSQL_HOST="my-host"
 MYSQL_USER="my-username"
 MYSQL_PASSWORD="my-root-password"
 MYSQL_DATABASE="my-database"
 
-# Connect to a MySQL database
-db = MySQL.connector(
-        database=MYSQL_DATABASE,
-        user=MYSQL_USER,
-        password=MYSQL_PASSWORD,
-        host=MYSQL_HOST
-    )
+try:
+    # Connect to a MySQL database
+    db = MySQL.connector(
+            database=MYSQL_DATABASE,
+            user=MYSQL_USER,
+            password=MYSQL_PASSWORD,
+            host=MYSQL_HOST
+        )
 
-# Initialize SwobBackendPublisher Lib
-SBPLib = Lib(db=db)
+    # Initialize SwobBackendPublisher Lib
+    SBPLib = Lib(db=db)
 
-result = SBPLib.decrypt(phone_number="+xxxxxxxxxxxx", platform_name="gmail")
+    result = SBPLib.decrypt(phone_number="+xxxxxxxxxxxx", platform_name="gmail")
 
-print(result)
+    print(result)
+
+except (UserDoesNotExist, DuplicateUsersExist, PlatformDoesNotExist) as error:
+    # Handle exception ...
+
+except Exception as error:
+    # Handle exception here ...
 ```
 
 result
@@ -60,26 +68,34 @@ result
 
 ```python
 from SwobBackendPublisher import MySQL, Lib
+from SwobBackendPublisher.exceptions import UserDoesNotExist, DuplicateUsersExist
 
 MYSQL_HOST="my-host"
 MYSQL_USER="my-username"
 MYSQL_PASSWORD="my-root-password"
 MYSQL_DATABASE="my-database"
 
-# Connect to a MySQL database
-db = MySQL.connector(
-        database=MYSQL_DATABASE,
-        user=MYSQL_USER,
-        password=MYSQL_PASSWORD,
-        host=MYSQL_HOST
-    )
+try:
+    # Connect to a MySQL database
+    db = MySQL.connector(
+            database=MYSQL_DATABASE,
+            user=MYSQL_USER,
+            password=MYSQL_PASSWORD,
+            host=MYSQL_HOST
+        )
 
-# Initialize SwobBackendPublisher Lib
-SBPLib = Lib(db=db)
+    # Initialize SwobBackendPublisher Lib
+    SBPLib = Lib(db=db)
 
-result = SBPLib.whoami(phone_number="+xxxxxxxxxxxx")
+    result = SBPLib.whoami(phone_number="+xxxxxxxxxxxx")
 
-print(result)
+    print(result)
+
+except (UserDoesNotExist, DuplicateUsersExist) as error:
+    # Handle exception ...
+
+except Exception as error:
+    # Handle exception here ...
 ```
 
 result
@@ -87,6 +103,96 @@ result
 ```json
 { "user_id": "" }
 ```
+
+### whichplatform
+
+```python
+from SwobBackendPublisher import MySQL, Lib
+from SwobBackendPublisher.exceptions import PlatformDoesNotExist
+
+MYSQL_HOST="my-host"
+MYSQL_USER="my-username"
+MYSQL_PASSWORD="my-root-password"
+MYSQL_DATABASE="my-database"
+
+try:
+    # Connect to a MySQL database
+    db = MySQL.connector(
+            database=MYSQL_DATABASE,
+            user=MYSQL_USER,
+            password=MYSQL_PASSWORD,
+            host=MYSQL_HOST
+        )
+
+    # Initialize SwobBackendPublisher Lib
+    SBPLib = Lib(db=db)
+
+    result = SBPLib.whichplatform(platform_letter="x")
+
+    print(result)
+
+except PlatformDoesNotExist as error:
+    # Handle exception ...
+
+except Exception as error:
+    # Handle exception here ...
+```
+
+result
+
+```json
+{ "platform_name": "" }
+```
+
+### myplatforms
+
+```python
+from SwobBackendPublisher import MySQL, Lib
+
+MYSQL_HOST="my-host"
+MYSQL_USER="my-username"
+MYSQL_PASSWORD="my-root-password"
+MYSQL_DATABASE="my-database"
+
+try:
+    # Connect to a MySQL database
+    db = MySQL.connector(
+            database=MYSQL_DATABASE,
+            user=MYSQL_USER,
+            password=MYSQL_PASSWORD,
+            host=MYSQL_HOST
+        )
+
+    # Initialize SwobBackendPublisher Lib
+    SBPLib = Lib(db=db)
+
+    result = SBPLib.myplatforms(user_id="xxxxxxxxxxxxxx")
+
+    print(result)
+
+except Exception as error:
+    # Handle exception here ...
+```
+
+result
+
+```json
+{ "unsaved_platforms": [], "saved_platforms": [] }
+```
+
+## Exceptions
+
+- **PlatformDoesNotExist**: Exception raised when Platform is not Found.
+
+  _return:_ String
+
+- **UserDoesNotExist**: Exception raised when User is not Found.
+
+  _return:_ String
+
+- **DuplicateUsersExist**: Exception raised when Duplicate Users Exist.
+
+  _return:_ String
 
 ## Licensing
 
