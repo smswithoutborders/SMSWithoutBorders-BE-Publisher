@@ -19,23 +19,27 @@ $ . venv/bin/activate
 
 ```bash
 $ pip install --upgrade pip wheel
-$ pip install "git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git#egg=SwobBackendPublisher"
+$ pip install "git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git@main#egg=SwobBackendPublisher"
 ```
 
 Install upgrades
 
 ```bash
-$ pip install -U "git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git#egg=SwobBackendPublisher"
+$ pip install --force-reinstall "git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git@main#egg=SwobBackendPublisher"
 ```
 
 ## Usage
 
-### Table of Contents
+### Table of Content
+
+---
 
 1. [get_grant_from_platform_name](#get_grant_from_platform_name)
 2. [get_userid_from_phonenumber](#get_userid_from_phonenumber)
 3. [get_platform_name_from_letter](#get_platform_name_from_letter)
 4. [get_user_platforms_from_id](#get_user_platforms_from_id)
+
+---
 
 ### get_grant_from_platform_name
 
