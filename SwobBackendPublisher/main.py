@@ -25,7 +25,7 @@ class Lib:
         """
         self.__configure(db)
 
-    def decrypt(self, phone_number: str, platform_name: str) -> dict:
+    def get_grant_from_platform_name(self, phone_number: str, platform_name: str) -> dict or list:
         """
         """
         from SwobBackendPublisher.models.grants import GrantModel
@@ -60,7 +60,7 @@ class Lib:
             logger.exception(error)
             raise error
 
-    def whoami(self, phone_number: str) -> dict:
+    def get_userid_from_phonenumber(self, phone_number: str) -> dict:
         """
         """
         from SwobBackendPublisher.models.users import UserModel
@@ -81,7 +81,7 @@ class Lib:
             logger.exception(error)
             raise error
 
-    def whichplatform(self, platform_letter: str) -> dict:
+    def get_platform_name_from_letter(self, platform_letter: str) -> dict:
         """
         """
         from SwobBackendPublisher.models.platforms import PlatformModel
@@ -102,7 +102,7 @@ class Lib:
             logger.exception(error)
             raise error
 
-    def myplatforms(self, user_id: str) -> dict:
+    def get_user_platforms_from_id(self, user_id: str) -> dict:
         """
         """
         from SwobBackendPublisher.models.users import UserModel

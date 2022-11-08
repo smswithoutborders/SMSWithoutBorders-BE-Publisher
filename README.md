@@ -19,12 +19,25 @@ $ . venv/bin/activate
 
 ```bash
 $ pip install --upgrade pip wheel
-$ pip install git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git#egg=SwobBackendPublisher
+$ pip install "git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git#egg=SwobBackendPublisher"
+```
+
+Install upgrades
+
+```bash
+$ pip install -U "git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git#egg=SwobBackendPublisher"
 ```
 
 ## Usage
 
-### decrypt
+### Table of Contents
+
+1. [get_grant_from_platform_name](#get_grant_from_platform_name)
+2. [get_userid_from_phonenumber](#get_userid_from_phonenumber)
+3. [get_platform_name_from_letter](#get_platform_name_from_letter)
+4. [get_user_platforms_from_id](#get_user_platforms_from_id)
+
+### get_grant_from_platform_name
 
 ```python
 from SwobBackendPublisher import MySQL, Lib
@@ -52,7 +65,7 @@ try:
     # Initialize SwobBackendPublisher Lib
     SBPLib = Lib(db=db)
 
-    result = SBPLib.decrypt(phone_number="+xxxxxxxxxxxx", platform_name="gmail")
+    result = SBPLib.get_grant_from_platform_name(phone_number="+xxxxxxxxxxxx", platform_name="gmail")
 
     print(result)
 
@@ -66,10 +79,10 @@ except Exception as error:
 result
 
 ```json
-{ "username": "", "token": {} }
+{ "username": "", "token": {}, "uniqueId": "" }
 ```
 
-### whoami
+### get_userid_from_phonenumber
 
 ```python
 from SwobBackendPublisher import MySQL, Lib
@@ -92,7 +105,7 @@ try:
     # Initialize SwobBackendPublisher Lib
     SBPLib = Lib(db=db)
 
-    result = SBPLib.whoami(phone_number="+xxxxxxxxxxxx")
+    result = SBPLib.get_userid_from_phonenumber(phone_number="+xxxxxxxxxxxx")
 
     print(result)
 
@@ -109,7 +122,7 @@ result
 { "user_id": "" }
 ```
 
-### whichplatform
+### get_platform_name_from_letter
 
 ```python
 from SwobBackendPublisher import MySQL, Lib
@@ -132,7 +145,7 @@ try:
     # Initialize SwobBackendPublisher Lib
     SBPLib = Lib(db=db)
 
-    result = SBPLib.whichplatform(platform_letter="x")
+    result = SBPLib.get_platform_name_from_letter(platform_letter="x")
 
     print(result)
 
@@ -149,7 +162,7 @@ result
 { "platform_name": "" }
 ```
 
-### myplatforms
+### get_user_platforms_from_id
 
 ```python
 from SwobBackendPublisher import MySQL, Lib
@@ -171,7 +184,7 @@ try:
     # Initialize SwobBackendPublisher Lib
     SBPLib = Lib(db=db)
 
-    result = SBPLib.myplatforms(user_id="xxxxxxxxxxxxxx")
+    result = SBPLib.get_user_platforms_from_id(user_id="xxxxxxxxxxxxxx")
 
     print(result)
 
