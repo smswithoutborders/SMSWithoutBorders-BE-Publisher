@@ -19,8 +19,7 @@ setup(
         'mysqlclient==2.1.1',
         'peewee==3.15.1',
         'protobuf==4.21.9',
-        'pycryptodome==3.14.1',
-        'Werkzeug==2.1.2'
+        'pycryptodome==3.14.1'
     ],
     test_suite='tests',
 )

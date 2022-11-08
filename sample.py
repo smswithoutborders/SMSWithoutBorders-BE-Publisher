@@ -16,5 +16,7 @@ SBPLib = Lib(db=db)
 
 result = SBPLib.whoami(phone_number="")
 result = SBPLib.decrypt(phone_number="", platform_name="")
+result = SBPLib.whichplatform(platform_letter="")
+result = SBPLib.myplatforms(user_id="")
 
 print(result)
