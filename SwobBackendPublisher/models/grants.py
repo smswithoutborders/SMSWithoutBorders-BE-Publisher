@@ -6,10 +6,7 @@ from peewee import DatabaseError
 from SwobBackendPublisher.schemas.wallets import Wallets
 from SwobBackendPublisher.security.data import Data
 
-from werkzeug.exceptions import BadRequest
-from werkzeug.exceptions import InternalServerError
-
-GrantObject = ()
+from SwobBackendPublisher.exceptions import GrantDoesNotExist
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +39,7 @@ class GrantModel:
 
         return decrypted_grant
         
-    def find(self, user_id: str, platform_id: int) -> GrantObject:
+    def find(self, user_id: str, platform_id: int) -> object:
         """
         """
         try:
@@ -55,8 +52,9 @@ class GrantModel:
             return grant
 
         except self.Wallets.DoesNotExist:
-            logger.error("Grant user_id:%s, platform_id:%d not found" % (user_id, platform_id))
-            raise BadRequest()
+            reason = "Grant for user_id:%s, platform_id:%d not found" % (user_id, platform_id)
+            logger.error(reason)
+            raise GrantDoesNotExist(reason)
 
         except DatabaseError as error:
-            raise InternalServerError(error)
+            raise error

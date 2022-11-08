@@ -1,8 +1,12 @@
 import logging
 
-from SwobBackendPublisher.exceptions import PlatformDoesNotExist, UserDoesNotExist, DuplicateUsersExist
-
-from werkzeug.exceptions import BadRequest
+from SwobBackendPublisher.exceptions import (
+    PlatformDoesNotExist,
+    UserDoesNotExist,
+    DuplicateUsersExist,
+    GrantDoesNotExist,
+    InvalidDataError
+)
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +43,7 @@ class Lib:
             try:
                 grant = Grant.find(user_id=user["userId"], platform_id=platform.id)
                 d_grant = Grant.decrypt(platform_name=platform.name, grant=grant, refresh=True)
-            except BadRequest:
+            except GrantDoesNotExist:
                 d_grant = []
 
             return d_grant
@@ -47,7 +51,8 @@ class Lib:
         except (
             UserDoesNotExist, 
             DuplicateUsersExist,
-            PlatformDoesNotExist
+            PlatformDoesNotExist,
+            InvalidDataError
             ) as error:
             raise error from None
                     

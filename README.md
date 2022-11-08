@@ -28,7 +28,12 @@ $ pip install git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publ
 
 ```python
 from SwobBackendPublisher import MySQL, Lib
-from SwobBackendPublisher.exceptions import PlatformDoesNotExist, UserDoesNotExist, DuplicateUsersExist
+from SwobBackendPublisher.exceptions import (
+    PlatformDoesNotExist,
+    UserDoesNotExist,
+    DuplicateUsersExist,
+    InvalidDataError
+)
 
 MYSQL_HOST="my-host"
 MYSQL_USER="my-username"
@@ -51,7 +56,7 @@ try:
 
     print(result)
 
-except (UserDoesNotExist, DuplicateUsersExist, PlatformDoesNotExist) as error:
+except (UserDoesNotExist, DuplicateUsersExist, PlatformDoesNotExist, InvalidDataError) as error:
     # Handle exception ...
 
 except Exception as error:
@@ -191,6 +196,10 @@ result
   _return:_ String
 
 - **DuplicateUsersExist**: Exception raised when Duplicate Users Exist.
+
+  _return:_ String
+
+- **InvalidDataError**: Exception raised when data mismatch the required format during decryption.
 
   _return:_ String
 

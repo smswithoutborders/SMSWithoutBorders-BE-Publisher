@@ -12,8 +12,7 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 from Crypto import Random
 
-from werkzeug.exceptions import InternalServerError
-from werkzeug.exceptions import Unauthorized
+from SwobBackendPublisher.exceptions import InvalidDataError
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +39,7 @@ class Data:
         self.iv = Random.new().read(AES.block_size).hex()[:16].encode("utf-8")
         
         if not len(self.key) == self.key_bytes:
-            raise InternalServerError("Invalid encryption key length. Key >= %d bytes" % self.key_bytes)
+            raise ValueError("Invalid encryption key length. Key >= %d bytes" % self.key_bytes)
     
     def encrypt(self, data: str, iv: str = None) -> dict:
         """
@@ -99,8 +98,8 @@ class Data:
                 return cleared_text
         
         except (ValueError, KeyError) as error:
-            logger.exception(error)
-            raise Unauthorized()
+            logger.error(error)
+            raise InvalidDataError(error)
 
     def hash(self, data: str, salt: str = None) -> str:
         """
