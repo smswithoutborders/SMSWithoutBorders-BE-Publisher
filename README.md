@@ -28,6 +28,14 @@ Install upgrades
 $ pip install --force-reinstall "git+https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git@main#egg=SwobBackendPublisher"
 ```
 
+### From source
+
+```bash
+$ git clone https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher.git
+$ cd SMSWithoutBorders-BE-Publisher
+$ python3 setup.py install
+```
+
 ## Usage
 
 ### Table of Content
