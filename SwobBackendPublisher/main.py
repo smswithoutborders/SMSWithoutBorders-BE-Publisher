@@ -117,3 +117,24 @@ class Lib:
         except Exception as error:
             logger.exception(error)
             raise error
+
+    def get_phone_number_hash_from_id(self, user_id: str, password: str) -> dict:
+        """
+        """
+        from SwobBackendPublisher.models.users import UserModel
+
+        try:
+            User = UserModel()
+
+            phoneNumber_hash = User.verify(password=password, user_id=user_id)
+
+            return {
+                "phoneNumber_hash": phoneNumber_hash
+            }
+
+        except (UserDoesNotExist, DuplicateUsersExist) as error:
+            raise error from None
+
+        except Exception as error:
+            logger.exception(error)
+            raise error

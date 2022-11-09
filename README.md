@@ -38,6 +38,7 @@ $ pip install --force-reinstall "git+https://github.com/smswithoutborders/SMSWit
 2. [get_userid_from_phonenumber](#get_userid_from_phonenumber)
 3. [get_platform_name_from_letter](#get_platform_name_from_letter)
 4. [get_user_platforms_from_id](#get_user_platforms_from_id)
+5. [get_phone_number_hash_from_id](#get_phone_number_hash_from_id)
 
 ---
 
@@ -200,6 +201,46 @@ result
 
 ```json
 { "unsaved_platforms": [], "saved_platforms": [] }
+```
+
+### get_phone_number_hash_from_id
+
+```python
+from SwobBackendPublisher import MySQL, Lib
+from SwobBackendPublisher.exceptions import UserDoesNotExist, DuplicateUsersExist
+
+MYSQL_HOST="my-host"
+MYSQL_USER="my-username"
+MYSQL_PASSWORD="my-root-password"
+MYSQL_DATABASE="my-database"
+
+try:
+    # Connect to a MySQL database
+    db = MySQL.connector(
+            database=MYSQL_DATABASE,
+            user=MYSQL_USER,
+            password=MYSQL_PASSWORD,
+            host=MYSQL_HOST
+        )
+
+    # Initialize SwobBackendPublisher Lib
+    SBPLib = Lib(db=db)
+
+    result = SBPLib.get_phone_number_hash_from_id(user_id="xxxxxxxxxxxxxx", password="password")
+
+    print(result)
+
+except (UserDoesNotExist, DuplicateUsersExist) as error:
+    # Handle exception ...
+
+except Exception as error:
+    # Handle exception here ...
+```
+
+result
+
+```json
+{ "phoneNumber_hash": "" }
 ```
 
 ## Exceptions

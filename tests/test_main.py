@@ -13,7 +13,9 @@ config.read(path_to_config)
 database = config["DATABASE"]
 
 phoneNumber = "+237123456789"
+phoneNumber_hash = "601141fe121799a07267bda9ad5e15d9778121661b3510be9f46418f07d630c01dfac1a12919d873ad6c12fd9a1ea2e7cf25e4e28574324586a87573ac3b470c"
 userId = "dead3662-5f78-11ed-b8e7-6d06c3aaf3c6"
+password = "testpassword"
 
 from SwobBackendPublisher import Lib, MySQL
 
@@ -60,6 +62,7 @@ def test_get_userid_from_phonenumber(connection):
     assert isinstance(result, dict)
     assert "user_id" in result
     assert result["user_id"] == userId
+    assert isinstance(result["user_id"], str)
 
 @pytest.mark.parametrize('platform_letter', ['s','t','T','g'])
 def test_get_platform_name_from_letter(connection, platform_letter):
@@ -83,6 +86,7 @@ def test_get_platform_name_from_letter(connection, platform_letter):
     assert isinstance(result, dict)
     assert "platform_name" in result
     assert result["platform_name"] == expected
+    assert isinstance(result["platform_name"], str)
 
 def test_get_user_platforms_from_id(connection):
     """
@@ -96,3 +100,16 @@ def test_get_user_platforms_from_id(connection):
     assert "saved_platforms" in result
     assert isinstance(result["unsaved_platforms"], list)
     assert isinstance(result["saved_platforms"], list)
+
+def test_get_phone_number_hash_from_id(connection):
+    """
+    """
+    result = connection.get_phone_number_hash_from_id(
+        user_id=userId,
+        password=password
+    )
+
+    assert isinstance(result, dict)
+    assert "phoneNumber_hash" in result
+    assert result["phoneNumber_hash"] == phoneNumber_hash
+    assert isinstance(result["phoneNumber_hash"], str)

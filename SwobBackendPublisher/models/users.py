@@ -192,3 +192,63 @@ class UserModel:
 
         except DatabaseError as error:
             raise error
+
+    def verify(self, password: str, user_id: str = None) -> str:
+        """
+        """
+        try:
+            data = self.Data()
+            password_hash = data.hash(password)
+
+            logger.debug("Verifying user: %s" % user_id)
+
+            userinfos = (
+                self.UsersInfos.select()
+                .where(
+                    self.UsersInfos.userId == user_id,
+                    self.UsersInfos.status == "verified"
+                )
+                .dicts()
+            )
+
+            # check for no user
+            if len(userinfos) < 1:
+                reason = "Invalid User Id: '%s'" % user_id
+                logger.error(reason)
+                raise UserDoesNotExist(reason)
+
+            # check for duplicate user
+            if len(userinfos) > 1:
+                reason = "Duplicate users found with UserId: %s" % user_id
+                logger.error(reason)
+                raise DuplicateUsersExist(reason)
+
+            logger.debug("Verifying Password for User with ID: %s" % user_id)
+
+            users = (
+                self.Users.select()
+                .where(
+                    self.Users.id == userinfos[0]["userId"],
+                    self.Users.password == password_hash
+                )
+                .dicts()
+            )
+
+            # check for no user
+            if len(users) < 1:
+                reason = "Invalid password for users with UserId: %s" % userinfos[0]["userId"]
+                logger.error(reason)
+                raise UserDoesNotExist(reason)
+
+            # check for duplicate user
+            if len(users) > 1:
+                reason = "Duplicate users found with UserId: %s" % userinfos[0]["userId"]
+                logger.error(reason)
+                raise DuplicateUsersExist(reason)
+
+            logger.info("- Successfully found User with UserID: %s" % userinfos[0]["userId"])
+
+            return str(userinfos[0]["full_phone_number"])
+
+        except DatabaseError as error:
+            raise error
