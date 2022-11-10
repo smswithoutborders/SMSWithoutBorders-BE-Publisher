@@ -43,6 +43,7 @@ def test_get_grant_from_platform_name(connection, platform_name):
     )
 
     assert isinstance(result, (dict, list))
+    print("is %s" % type(result))
 
     if isinstance(result, dict):
         assert "token" in result
@@ -51,6 +52,9 @@ def test_get_grant_from_platform_name(connection, platform_name):
         assert isinstance(result["uniqueId"], str)
         assert "username" in result
         assert isinstance(result["username"], str)
+        assert "phoneNumber_hash" in result
+        assert result["phoneNumber_hash"] == phoneNumber_hash
+        assert isinstance(result["phoneNumber_hash"], str)
 
 def test_get_userid_from_phonenumber(connection):
     """

@@ -10,5 +10,5 @@ test:
 	
 	@echo "[!] Starting test ..."
 	@. $(venv_path)/bin/activate && (\
-		$(pytest) --verbose; \
+		$(pytest) --verbose -s; \
 	)

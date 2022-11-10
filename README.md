@@ -92,7 +92,7 @@ except Exception as error:
 result
 
 ```json
-{ "username": "", "token": {}, "uniqueId": "" }
+{ "username": "", "token": {}, "uniqueId": "", "phoneNumber_hash": "" }
 ```
 
 ### get_userid_from_phonenumber

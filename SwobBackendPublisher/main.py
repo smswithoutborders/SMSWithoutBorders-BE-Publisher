@@ -31,11 +31,13 @@ class Lib:
         from SwobBackendPublisher.models.grants import GrantModel
         from SwobBackendPublisher.models.platforms import PlatformModel
         from SwobBackendPublisher.models.users import UserModel
+        from SwobBackendPublisher.security.data import Data
 
         try:
             User = UserModel()
             Grant = GrantModel()
             Platform = PlatformModel()
+            data = Data()
         
             user = User.find(phone_number=phone_number)
             platform = Platform.find(platform_name=platform_name)
@@ -43,6 +45,7 @@ class Lib:
             try:
                 grant = Grant.find(user_id=user["userId"], platform_id=platform.id)
                 d_grant = Grant.decrypt(platform_name=platform.name, grant=grant, refresh=True)
+                d_grant["phoneNumber_hash"] = data.hash(phone_number)
             except GrantDoesNotExist:
                 d_grant = []
 
