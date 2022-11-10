@@ -10,6 +10,11 @@ New
 - Added get_phone_number_hash_from_id method. Includes docs, test
   updates. [Promise Fru]
 
+Changes
+~~~~~~~
+- Added source installation instructions. [Promise Fru]
+- Generate changelog. [Promise Fru]
+
 Other
 ~~~~~
 - Update: updated docs. [Promise Fru]
