@@ -55,7 +55,6 @@ $ python3 setup.py install
 ```python
 from SwobBackendPublisher import MySQL, Lib
 from SwobBackendPublisher.exceptions import (
-    PlatformDoesNotExist,
     UserDoesNotExist,
     DuplicateUsersExist,
     InvalidDataError
@@ -82,7 +81,7 @@ try:
 
     print(result)
 
-except (UserDoesNotExist, DuplicateUsersExist, PlatformDoesNotExist, InvalidDataError) as error:
+except (UserDoesNotExist, DuplicateUsersExist, InvalidDataError) as error:
     # Handle exception ...
 
 except Exception as error:
