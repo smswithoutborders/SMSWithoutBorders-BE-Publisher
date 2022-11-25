@@ -6,7 +6,6 @@ from peewee import DateTimeField
 from SwobBackendPublisher.schemas.baseModel import BaseModel
 
 from SwobBackendPublisher.schemas.users import Users
-from SwobBackendPublisher.schemas.platforms import Platforms
 
 from datetime import datetime
 
@@ -17,7 +16,7 @@ class Wallets(BaseModel):
     uniqueIdHash = CharField(unique=True, null=True)
     iv = CharField(null=True)
     userId = ForeignKeyField(Users, column_name="userId")
-    platformId = ForeignKeyField(Platforms, column_name="platformId")
+    platformId = CharField(column_name="platformId")
     createdAt = DateTimeField(null=True, default=datetime.now)
 
     class Meta:

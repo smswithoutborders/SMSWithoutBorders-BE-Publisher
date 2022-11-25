@@ -1,21 +1,9 @@
 import pytest
 import os
-import configparser
-
-path_to_config = os.path.join(os.path.dirname(__file__), "config.cfg")
-
-if not os.path.exists(path_to_config):
-    error = "Configurations file not found at '%s'" % path_to_config
-    raise FileNotFoundError(error)
-
-config = configparser.RawConfigParser()
-config.read(path_to_config)
-database = config["DATABASE"]
 
 phoneNumber = "+237123456789"
-phoneNumber_hash = "601141fe121799a07267bda9ad5e15d9778121661b3510be9f46418f07d630c01dfac1a12919d873ad6c12fd9a1ea2e7cf25e4e28574324586a87573ac3b470c"
 userId = "dead3662-5f78-11ed-b8e7-6d06c3aaf3c6"
-password = "testpassword"
+password = "dummy_password"
 
 from SwobBackendPublisher import Lib, MySQL
 
@@ -24,10 +12,10 @@ def connection():
     """
     """
     db = MySQL.connector(
-        database=database["DATABASE"],
-        user=database["USER"],
-        host=database["HOST"],
-        password=database["PASSWORD"]
+        database=os.environ["MYSQL_DATABASE"],
+        user=os.environ["MYSQL_USER"],
+        host=os.environ["MYSQL_HOST"],
+        password=os.environ["MYSQL_PASSWORD"]
     )
 
     SBPLib = Lib(db=db)
@@ -53,7 +41,6 @@ def test_get_grant_from_platform_name(connection, platform_name):
         assert "username" in result
         assert isinstance(result["username"], str)
         assert "phoneNumber_hash" in result
-        assert result["phoneNumber_hash"] == phoneNumber_hash
         assert isinstance(result["phoneNumber_hash"], str)
 
 def test_get_userid_from_phonenumber(connection):
@@ -68,15 +55,13 @@ def test_get_userid_from_phonenumber(connection):
     assert result["user_id"] == userId
     assert isinstance(result["user_id"], str)
 
-@pytest.mark.parametrize('platform_letter', ['s','t','T','g'])
+@pytest.mark.parametrize('platform_letter', ['t','T','g'])
 def test_get_platform_name_from_letter(connection, platform_letter):
     """
     """
     expected = None
 
-    if platform_letter == "s":
-        expected = "slack"
-    elif platform_letter == "t":
+    if platform_letter == "t":
         expected = "twitter"
     elif platform_letter == "T":
         expected = "telegram"
@@ -115,5 +100,4 @@ def test_get_phone_number_hash_from_id(connection):
 
     assert isinstance(result, dict)
     assert "phoneNumber_hash" in result
-    assert result["phoneNumber_hash"] == phoneNumber_hash
     assert isinstance(result["phoneNumber_hash"], str)

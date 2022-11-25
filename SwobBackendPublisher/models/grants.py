@@ -15,12 +15,10 @@ class GrantModel:
         self.Wallets = Wallets
         self.Data = Data
 
-    def decrypt(self, platform_name: str, grant, refresh: bool = False) -> dict:
+    def decrypt(self, grant, refresh: bool = False) -> dict:
         """
         """
-        platformName = platform_name.lower()
-
-        logger.debug("decrypting %s grant ..." % platformName)
+        logger.debug("decrypting grant ...")
 
         data = self.Data()
 
@@ -35,15 +33,15 @@ class GrantModel:
             "uniqueId":json.loads(uniqueId)
         }
 
-        logger.info("- Successfully decrypted %s grant" % platformName)
+        logger.info("- Successfully decrypted grant")
 
         return decrypted_grant
         
-    def find(self, user_id: str, platform_id: int) -> object:
+    def find(self, user_id: str, platform_id: str) -> object:
         """
         """
         try:
-            logger.debug("Finding grant user_id:%s, platform_id:%d ..." % (user_id, platform_id))
+            logger.debug("Finding grant user_id:%s, platform_id:%s ..." % (user_id, platform_id))
 
             grant = self.Wallets.get(self.Wallets.userId == user_id, self.Wallets.platformId == platform_id)
 
@@ -52,7 +50,7 @@ class GrantModel:
             return grant
 
         except self.Wallets.DoesNotExist:
-            reason = "Grant for user_id:%s, platform_id:%d not found" % (user_id, platform_id)
+            reason = "Grant for user_id:%s, platform_id:%s not found" % (user_id, platform_id)
             logger.error(reason)
             raise GrantDoesNotExist(reason)
 

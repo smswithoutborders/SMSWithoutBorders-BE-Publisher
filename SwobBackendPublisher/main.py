@@ -29,22 +29,19 @@ class Lib:
         """
         """
         from SwobBackendPublisher.models.grants import GrantModel
-        from SwobBackendPublisher.models.platforms import PlatformModel
         from SwobBackendPublisher.models.users import UserModel
         from SwobBackendPublisher.security.data import Data
 
         try:
             User = UserModel()
             Grant = GrantModel()
-            Platform = PlatformModel()
             data = Data()
         
             user = User.find(phone_number=phone_number)
-            platform = Platform.find(platform_name=platform_name)
-            
+
             try:
-                grant = Grant.find(user_id=user["userId"], platform_id=platform.id)
-                d_grant = Grant.decrypt(platform_name=platform.name, grant=grant, refresh=True)
+                grant = Grant.find(user_id=user["userId"], platform_id=platform_name.lower())
+                d_grant = Grant.decrypt(grant=grant)
                 d_grant["phoneNumber_hash"] = data.hash(phone_number)
             except GrantDoesNotExist:
                 d_grant = []
@@ -54,7 +51,6 @@ class Lib:
         except (
             UserDoesNotExist, 
             DuplicateUsersExist,
-            PlatformDoesNotExist,
             InvalidDataError
             ) as error:
             raise error from None
@@ -87,16 +83,22 @@ class Lib:
     def get_platform_name_from_letter(self, platform_letter: str) -> dict:
         """
         """
-        from SwobBackendPublisher.models.platforms import PlatformModel
+        from SwobThirdPartyPlatforms import ImportPlatform, available_platforms
 
         try:
-            Platform = PlatformModel()
+            for platform in available_platforms:
+                Platform = ImportPlatform(platform_name = platform)
+                platform_info = Platform.info
 
-            platform = Platform.find(platform_letter=platform_letter)
-
-            return {
-                "platform_name": platform.name
-            }
+                if platform_letter == platform_info["letter"]:
+                    return {
+                        "platform_name": platform_info["name"]
+                    }
+                else:
+                    continue
+                
+            reason = "Platform letter '%s' not found" % platform_letter
+            raise PlatformDoesNotExist(reason)
 
         except PlatformDoesNotExist as error:
             raise error from None

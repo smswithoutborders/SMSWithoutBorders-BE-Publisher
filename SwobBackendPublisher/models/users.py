@@ -1,16 +1,15 @@
 import logging
-import json
 
-from peewee import JOIN, DatabaseError
+from peewee import DatabaseError
 
 from SwobBackendPublisher.schemas.users import Users
 from SwobBackendPublisher.schemas.usersinfo import UsersInfos
 from SwobBackendPublisher.schemas.wallets import Wallets
-from SwobBackendPublisher.schemas.platforms import Platforms
 
 from SwobBackendPublisher.security.data import Data
-
 from SwobBackendPublisher.exceptions import UserDoesNotExist, DuplicateUsersExist
+
+from SwobThirdPartyPlatforms import ImportPlatform, available_platforms
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +20,6 @@ class UserModel:
         self.Users = Users
         self.UsersInfos = UsersInfos
         self.Wallets = Wallets
-        self.Platforms = Platforms
         self.Data = Data
 
     def find(self, phone_number: str = None, user_id: str = None) -> object:
@@ -122,40 +120,12 @@ class UserModel:
         """
         """
         try:
+            saved_platforms = []
+
             user_platforms = {
                 "unsaved_platforms": [],
                 "saved_platforms": []
             }
-
-            logger.debug("Fetching unsaved platforms for %s ..." % user_id)
-            
-            t2 = (
-                self.Wallets.alias("t2").select()
-                .where(
-                    self.Wallets.alias("t2").userId == user_id
-                )
-            )
-
-            unsaved_platforms = (
-                self.Platforms.select()
-                .join(t2, JOIN.LEFT_OUTER, on=(t2.c.platformId == self.Platforms.id))
-                .where(
-                    t2.c.platformId == None
-                )
-                .dicts()
-            )
-
-            for row in unsaved_platforms:
-                result = {
-                    "name": row["name"].lower(),
-                    "description": json.loads(row["description"]),
-                    "logo": row["logo"],
-                    "initialization_url": f"/platforms/{row['name']}/protocols/{json.loads(row['protocols'])[0]}",
-                    "type": row["type"],
-                    "letter": row["letter"]
-                }
-
-                user_platforms["unsaved_platforms"].append(result)
 
             logger.debug("Fetching saved platforms for %s ..." % user_id)
 
@@ -168,26 +138,42 @@ class UserModel:
             )
 
             for row in saved_wallet_platform:
-                saved_platforms = (
-                    self.Platforms.select()
-                    .where(
-                        self.Platforms.id == row["platformId"]
-                    )
-                    .dicts()
-                )
+                saved_platforms.append(row["platformId"])
+
+                Platform = ImportPlatform(platform_name = row["platformId"])
+                platform_info = Platform.info
 
                 result = {
-                    "name": saved_platforms[0]["name"].lower(),
-                    "description": json.loads(saved_platforms[0]["description"]),
-                    "logo": saved_platforms[0]["logo"],
-                    "initialization_url": f"/platforms/{saved_platforms[0]['name']}/protocols/{json.loads(saved_platforms[0]['protocols'])[0]}",
-                    "type": saved_platforms[0]["type"],
-                    "letter": saved_platforms[0]["letter"]
+                    "name": platform_info["name"].lower(),
+                    "description": platform_info["description"],
+                    "logo": platform_info["logo"],
+                    "initialization_url": f"/platforms/{platform_info['name']}/protocols/{platform_info['protocols'][0]}",
+                    "type": platform_info["type"],
+                    "letter": platform_info["letter"]
                 }
 
                 user_platforms["saved_platforms"].append(result)
 
+            logger.debug("Fetching unsaved platforms for %s ..." % user_id)
+            
+            for platform in available_platforms:
+                if platform not in saved_platforms:
+                    Platform = ImportPlatform(platform_name = platform)
+                    platform_info = Platform.info
+
+                    result = {
+                        "name": platform_info["name"].lower(),
+                        "description": platform_info["description"],
+                        "logo": platform_info["logo"],
+                        "initialization_url": f"/platforms/{platform_info['name']}/protocols/{platform_info['protocols'][0]}",
+                        "type": platform_info["type"],
+                        "letter": platform_info["letter"]
+                    }
+
+                    user_platforms["unsaved_platforms"].append(result)
+        
             logger.info("- Successfully Fetched users platforms")
+
             return user_platforms
 
         except DatabaseError as error:

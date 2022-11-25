@@ -19,7 +19,8 @@ setup(
         'mysqlclient==2.1.1',
         'peewee==3.15.1',
         'protobuf==4.21.9',
-        'pycryptodome==3.14.1'
+        'pycryptodome==3.14.1',
+        'SwobThirdPartyPlatforms @ git+https://github.com/smswithoutborders/SMSWithoutBorders-Customized-Third-Party-Platforms.git@main#egg=SwobThirdPartyPlatforms'
     ],
     test_suite='tests',
 )
