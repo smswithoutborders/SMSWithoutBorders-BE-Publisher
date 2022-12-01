@@ -59,6 +59,9 @@ class Lib:
             logger.exception(error)
             raise error
 
+        finally:
+            self.DB.close()
+
     def get_userid_from_phonenumber(self, phone_number: str) -> dict:
         """
         """
@@ -79,6 +82,9 @@ class Lib:
         except Exception as error:
             logger.exception(error)
             raise error
+
+        finally:
+            self.DB.close()
 
     def get_platform_name_from_letter(self, platform_letter: str) -> dict:
         """
@@ -123,6 +129,9 @@ class Lib:
             logger.exception(error)
             raise error
 
+        finally:
+            self.DB.close()
+
     def get_phone_number_hash_from_id(self, user_id: str, password: str) -> dict:
         """
         """
@@ -143,3 +152,6 @@ class Lib:
         except Exception as error:
             logger.exception(error)
             raise error
+
+        finally:
+            self.DB.close()
