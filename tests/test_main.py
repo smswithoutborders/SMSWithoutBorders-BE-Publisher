@@ -101,3 +101,20 @@ def test_get_phone_number_hash_from_id(connection):
     assert isinstance(result, dict)
     assert "phoneNumber_hash" in result
     assert isinstance(result["phoneNumber_hash"], str)
+
+def test_hasher():
+    """
+    """
+    SBPLib = Lib()
+
+    data = "test_string"
+    salt = "test_salt"
+    expected = "a3f8b6f9a989ab51b5730de5271ef6fbdd68424c0c5bf0cc3629fe7d24a0e6dc084bd6a77e38d06d01559a76cbc3161409f9695cebddb18a4082398ec773233b"
+
+    result = SBPLib.hasher(
+        data=data,
+        salt=salt
+    )
+
+    assert isinstance(result, str)
+    assert result == expected

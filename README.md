@@ -47,6 +47,7 @@ $ python3 setup.py install
 3. [get_platform_name_from_letter](#get_platform_name_from_letter)
 4. [get_user_platforms_from_id](#get_user_platforms_from_id)
 5. [get_phone_number_hash_from_id](#get_phone_number_hash_from_id)
+6. [hasher](#hasher)
 
 ---
 
@@ -248,6 +249,31 @@ result
 
 ```json
 { "phoneNumber_hash": "" }
+```
+
+### hasher
+
+```python
+from SwobBackendPublisher import Lib
+
+try:
+    SBPLib = Lib()
+
+    result = SBPLib.hasher(
+        data="",
+        salt="" #Optional (if empty use default from configurations)
+    )
+
+    print(result) #string
+
+except Exception as error:
+    # Handle exception here ...
+```
+
+result
+
+```json
+""
 ```
 
 ## Exceptions

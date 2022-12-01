@@ -1,9 +1,11 @@
 import logging
 
+from SwobBackendPublisher.schemas.baseModel import db
 from SwobBackendPublisher.schemas.credentials import Credentials
 creds = Credentials.get(Credentials.id == 1)
 e_key = creds.shared_key
 salt = creds.hashing_salt
+db.close()
 
 import string
 import hashlib
@@ -113,6 +115,6 @@ class Data:
             str
         """
         logger.debug("starting data hashing ...")
-        hash_data = hmac.new(self.salt if not salt else salt, data.encode("utf-8"), hashlib.sha512)
+        hash_data = hmac.new(self.salt if not salt else salt.encode("utf-8"), data.encode("utf-8"), hashlib.sha512)
         logger.info("- Successfully hashed data")
         return str(hash_data.hexdigest())

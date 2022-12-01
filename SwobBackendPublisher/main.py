@@ -20,7 +20,7 @@ class Lib:
         """
         cls.DB = db
 
-    def __init__(self, db) -> None:
+    def __init__(self, db = None) -> None:
         """
         """
         self.__configure(db)
@@ -155,3 +155,19 @@ class Lib:
 
         finally:
             self.DB.close()
+
+    def hasher(self, data: str, salt: str = None) -> dict:
+        """
+        """
+        from SwobBackendPublisher.security.data import Data
+
+        crypto = Data()
+
+        try:
+            result = crypto.hash(data=data, salt=salt)
+
+            return result
+
+        except Exception as error:
+            logger.exception(error)
+            raise error
