@@ -23,14 +23,14 @@ class GrantModel:
         data = self.Data()
 
         iv = grant.iv
-        username = data.decrypt(data=grant.username, iv=iv).encode("utf-8")
+        username = data.decrypt(data=grant.username, iv=iv)
         token = data.decrypt(data=grant.token, iv=iv)
-        uniqueId = data.decrypt(data=grant.uniqueId, iv=iv).encode("utf-8")
+        uniqueId = data.decrypt(data=grant.uniqueId, iv=iv)
 
         decrypted_grant = {
-            "username":json.loads(username) if username else username,
+            "username":username,
             "token":json.loads(token),
-            "uniqueId":json.loads(uniqueId)
+            "uniqueId":uniqueId
         }
 
         logger.info("- Successfully decrypted grant")
