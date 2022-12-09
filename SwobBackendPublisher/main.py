@@ -1,4 +1,5 @@
 import logging
+import json
 
 from SwobBackendPublisher.exceptions import (
     PlatformDoesNotExist,
@@ -31,6 +32,7 @@ class Lib:
         from SwobBackendPublisher.models.grants import GrantModel
         from SwobBackendPublisher.models.users import UserModel
         from SwobBackendPublisher.security.data import Data
+        from SwobThirdPartyPlatforms import ImportPlatform
 
         try:
             User = UserModel()
@@ -38,11 +40,31 @@ class Lib:
             data = Data()
         
             user = User.find(phone_number=phone_number)
+            Platform = ImportPlatform(platform_name=platform_name.lower())
 
+            try:
+                Methods = Platform.methods(origin = "")
+            
+            except TypeError as error:
+                if str(error) == "__init__() got an unexpected keyword argument 'origin'":
+                    Methods = Platform.methods(identifier = "")
+                else:
+                    raise error
+                    
             try:
                 grant = Grant.find(user_id=user["userId"], platform_id=platform_name.lower())
                 d_grant = Grant.decrypt(grant=grant)
+
+                try:
+                    token = Methods.refresh(token=d_grant["token"])
+                    Grant.update(id=grant.id, token=token, iv=grant.iv)
+                    d_grant["token"] = token
+
+                except AttributeError:
+                    pass
+
                 d_grant["phoneNumber_hash"] = data.hash(phone_number)
+                
             except GrantDoesNotExist:
                 d_grant = []
 

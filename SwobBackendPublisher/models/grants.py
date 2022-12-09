@@ -15,7 +15,7 @@ class GrantModel:
         self.Wallets = Wallets
         self.Data = Data
 
-    def decrypt(self, grant, refresh: bool = False) -> dict:
+    def decrypt(self, grant) -> dict:
         """
         """
         logger.debug("decrypting grant ...")
@@ -36,6 +36,28 @@ class GrantModel:
         logger.info("- Successfully decrypted grant")
 
         return decrypted_grant
+
+    def update(self, id: str, token: dict, iv: str) -> None:
+        """
+        """
+        logger.debug("updating grant ...")
+
+        data = self.Data()
+
+        upd_wallet = (
+            self.Wallets.update(
+                token=data.encrypt(data=json.dumps(token), iv=iv)["e_data"],
+            )
+            .where(
+                self.Wallets.id == id
+            )
+        )
+        
+        upd_wallet.execute()
+
+        logger.info("- Successfully updated grant")
+
+        return None
         
     def find(self, user_id: str, platform_id: str) -> object:
         """
