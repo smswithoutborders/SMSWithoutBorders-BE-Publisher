@@ -1,11 +1,20 @@
+import os
 import logging
 
 from SwobBackendPublisher.schemas.baseModel import db
-from SwobBackendPublisher.schemas.credentials import Credentials
-creds = Credentials.get(Credentials.id == 1)
-e_key = creds.shared_key
-salt = creds.hashing_salt
-db.close()
+
+SHARED_KEY = os.environ.get("SHARED_KEY")
+HASHING_SALT = os.environ.get("HASHING_SALT")
+
+if SHARED_KEY and HASHING_SALT:
+    e_key = open(SHARED_KEY, "r").readline().strip()
+    salt = open(HASHING_SALT, "r").readline().strip()
+else:
+    from SwobBackendPublisher.schemas.credentials import Credentials
+    creds = Credentials.get(Credentials.id == 1)
+    e_key = creds.shared_key
+    salt = creds.hashing_salt
+    db.close()
 
 import string
 import hashlib
