@@ -95,7 +95,8 @@ class Lib:
             user = User.find(phone_number=phone_number)
 
             return {
-                "user_id": user["userId"]
+                "user_id": user["userId"],
+                "alias": user["alias"]
             }
 
         except (UserDoesNotExist, DuplicateUsersExist) as error:

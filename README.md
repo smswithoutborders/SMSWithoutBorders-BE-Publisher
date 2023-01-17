@@ -132,7 +132,7 @@ except Exception as error:
 result
 
 ```json
-{ "user_id": "" }
+{ "user_id": "", "alias": "" }
 ```
 
 ### get_platform_name_from_letter

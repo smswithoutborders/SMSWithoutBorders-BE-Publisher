@@ -2,7 +2,8 @@ import pytest
 import os
 
 phoneNumber = "+237123456789"
-userId = "dead3662-5f78-11ed-b8e7-6d06c3aaf3c6"
+alias = "dummy_user"
+userId = os.environ["USERID"]
 password = "dummy_password"
 
 from SwobBackendPublisher import Lib, MySQL
@@ -52,8 +53,11 @@ def test_get_userid_from_phonenumber(connection):
 
     assert isinstance(result, dict)
     assert "user_id" in result
+    assert "alias" in result
     assert result["user_id"] == userId
+    assert result["alias"] == alias
     assert isinstance(result["user_id"], str)
+    assert isinstance(result["alias"], str)
 
 @pytest.mark.parametrize('platform_letter', ['t','T','g'])
 def test_get_platform_name_from_letter(connection, platform_letter):
