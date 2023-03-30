@@ -57,7 +57,7 @@ class Lib:
 
                 try:
                     token = Methods.refresh(token=d_grant["token"])
-                    Grant.update(id=grant.id, token=token, iv=grant.iv)
+                    Grant.update(id=grant.id, token=token)
                     d_grant["token"] = token
 
                 except AttributeError:

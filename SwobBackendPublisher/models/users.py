@@ -57,7 +57,7 @@ class UserModel:
                 logger.info("- Successfully found user with Phone Number: %s" % phone_number_hash)
 
                 userId = userinfos[0]["userId"]
-                alias = data.decrypt(data=userinfos[0]["name"], iv=userinfos[0]["iv"]) 
+                alias = data.decrypt(data=userinfos[0]["name"])
 
                 return {
                     "userId": userId,

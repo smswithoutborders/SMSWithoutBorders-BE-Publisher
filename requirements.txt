@@ -4,3 +4,4 @@ peewee==3.15.1
 protobuf==4.21.9
 pycryptodome==3.14.1
 pytest==7.2.0
+SwobThirdPartyPlatforms @ git+https://github.com/smswithoutborders/SMSWithoutBorders-Customized-Third-Party-Platforms.git@main#egg=SwobThirdPartyPlatforms
