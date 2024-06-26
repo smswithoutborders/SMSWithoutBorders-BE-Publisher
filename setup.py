@@ -1,9 +1,15 @@
+"""
+SwobBackendPublisher Setup Script
+"""
+
 import os
 from setuptools import find_packages, setup
 
-f = open(os.path.join(os.path.dirname(__file__), 'README.md'))
-readme = f.read()
-f.close()
+with open("README.md", "r", encoding="utf-8") as fh:
+    readme = fh.read()
+
+with open("requirements.txt", "r", encoding="utf-8") as fh:
+    requirements = [req.strip() for req in fh.readlines()]
 
 setup(
     name='SwobBackendPublisher',
@@ -11,16 +17,17 @@ setup(
     version='0.1.0',
     description='SMSWithoutBorders Backend Publisher library',
     long_description=readme,
+    long_description_content_type="text/markdown",
+    url="https://github.com/smswithoutborders/SMSWithoutBorders-BE-Publisher",
     author='Afkanerd',
     author_email='developers@smswithoutborders.com',
-    license='The GNU General Public License v3.0',
-    install_requires=[
-        'mysql-connector-python==8.0.29',
-        'mysqlclient==2.1.1',
-        'peewee==3.17.3',
-        'protobuf==4.21.9',
-        'pycryptodome==3.19.1',
-        'SwobThirdPartyPlatforms @ git+https://github.com/smswithoutborders/SMSWithoutBorders-Customized-Third-Party-Platforms.git@main#egg=SwobThirdPartyPlatforms'
-    ],
+    license="GPLv3",
+    install_requires=requirements,
     test_suite='tests',
+    classifiers=[
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3 :: Only",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    ],
 )
